@@ -64,7 +64,8 @@ their targets. `.tmpl` files read the palette from `.chezmoidata`.
 |---|---|---|
 | `.chezmoidata/desktop.toml` | (data) | Palette, fonts, wallpaper path, monitor line |
 | `dot_config/hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` | Entry point; requires the modules below in order |
-| `dot_config/hypr/colors.lua.tmpl` | `hypr/colors.lua` | Palette as a Lua table, generated from the data file |
+| `dot_config/hypr/desktop.lua.tmpl` | `hypr/desktop.lua` | Palette, monitor, font and wallpaper as a Lua table, generated from the data file |
+| `dot_config/hypr/dot_luarc.json` | `hypr/.luarc.json` | LSP stub path for editing |
 | `dot_config/hypr/apps.lua` | `hypr/apps.lua` | Program commands in one place (terminal, browsers, launchers…) |
 | `dot_config/hypr/look.lua` | `hypr/look.lua` | monitor, general, decoration, animations, layer rules for blur |
 | `dot_config/hypr/binds.lua` | `hypr/binds.lua` | Every keybind and mouse bind, plus the `super+a` and `super+s` submaps |
@@ -78,6 +79,9 @@ their targets. `.tmpl` files read the palette from `.chezmoidata`.
 | `dot_config/rofi/theme.rasi.tmpl` | `rofi/theme.rasi` | Centered blurred panel, old theme ported |
 | `dot_config/dunst/dunstrc.tmpl` | `dunst/dunstrc` | Old dunstrc ported, palette templated |
 | `dot_config/kitty/kitty.conf.tmpl` | `kitty/kitty.conf` | Font and palette |
+| `dot_config/xdg-desktop-portal/hyprland-portals.conf` | `xdg-desktop-portal/hyprland-portals.conf` | KDE file chooser, Hyprland screenshots |
+| `dot_config/nwg-bar/bar.json, style.css.tmpl` | `nwg-bar/` | Logout menu (stock file calls sway) |
+| `tests/hl-mock.lua, tests/check.sh` | (ignored) | Offline validation |
 | `README.md` | (source only) | New "Hyprland desktop" section: layout, keys, theme seam |
 
 `chezmoi apply` replaces the dangling `~/.config/rofi/*.rasi`,
@@ -217,7 +221,7 @@ keys, the compositor toggle, `super+a b`, all other layouts, hyprlock.
 On the `hyprland.start` event: `waybar`, `hyprpaper`, `dunst`,
 `hyprpolkitagent`, `nm-applet`, `blueman-applet`,
 `wl-paste --watch cliphist store`, `emacs --daemon`,
-`syncthing --no-browser`, `sunshine`. Steam is not started.
+`syncthing --no-browser (guarded; arrives with the next bazzy image)`, `sunshine`. Steam is not started.
 
 Environment: `XDG_CURRENT_DESKTOP=Hyprland`, `XDG_SESSION_DESKTOP=Hyprland`,
 `QT_QPA_PLATFORM=wayland`, `QT_QPA_PLATFORMTHEME=kde`, `MOZ_ENABLE_WAYLAND=1`,
