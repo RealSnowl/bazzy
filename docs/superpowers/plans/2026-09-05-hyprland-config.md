@@ -4,7 +4,7 @@
 
 **Goal:** Give the Hyprland session on this machine the xmonad setup's shortcuts, workspaces and mouse-driven bar, restyled as translucent "glass" on the old palette, all managed by chezmoi.
 
-**Architecture:** Hyprland's Lua config is split into small modules required from `hyprland.lua`. The colour palette, fonts, monitor and wallpaper live once in a chezmoi data file; every app config that needs them (Hyprland, Waybar, rofi, dunst, kitty, nwg-bar, hyprpaper) is a chezmoi template reading that file. Offline checks execute the Lua under a mocked `hl` API with LuaJIT and parse each rendered config with its own tool.
+**Architecture:** Hyprland's Lua config is split into small modules required from `hyprland.lua`. The color palette, fonts, monitor and wallpaper live once in a chezmoi data file; every app config that needs them (Hyprland, Waybar, rofi, dunst, kitty, nwg-bar, hyprpaper) is a chezmoi template reading that file. Offline checks execute the Lua under a mocked `hl` API with LuaJIT and parse each rendered config with its own tool.
 
 **Tech Stack:** chezmoi 2.72 (Go templates, `.chezmoidata`), Hyprland 0.56.2 Lua config (Lua 5.4 in the compositor, LuaJIT 2.1 for offline checks, so write 5.1-compatible Lua), Waybar 0.15, rofi 2.0, dunst 1.13, kitty 0.48, hyprpaper 0.8, nwg-bar 0.1.6.
 
@@ -13,7 +13,7 @@
 ## Global Constraints
 
 - Every file lives in the chezmoi source dir `~/.local/share/chezmoi` and targets `~/.config/…`. Nothing is written to `~/.config` by hand except the one-time cleanup in Task 12.
-- Palette, fonts, monitor and wallpaper are read only from `.chezmoidata/desktop.toml`. No hex colour appears in any other source file.
+- Palette, fonts, monitor and wallpaper are read only from `.chezmoidata/desktop.toml`. No hex color appears in any other source file.
 - Lua must load under LuaJIT (Lua 5.1 syntax: no `//`, no bitwise operators, no `goto` labels needed). Hyprland itself runs Lua 5.4.
 - Hyprland API reference is `/usr/share/hypr/stubs/hl.meta.lua` and the wiki clone at `/tmp/claude-1000/-var-home-gamer/a8357384-9ea7-4f01-829d-6ab985fa5d93/scratchpad/hyprland-wiki/content/configuring/` (re-clone `https://github.com/hyprwm/hyprland-wiki` if the scratchpad is gone). Do not use the deprecated `hyprland.conf` syntax anywhere. The wiki is newer than the installed 0.56.2; when a name is in doubt, `strings /usr/bin/Hyprland | grep -x <name>` settles it (this is how `dampening` and the absence of `reload_config` were confirmed).
 - Keys keep their xmonad positions (Colemak via kmonad, Hyprland sees `us`): focus next/prev on `N`/`E`, width on `H`/`L`, master on `M`.
@@ -25,7 +25,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF
 ```
 
-- The spec's file table is amended by this plan (recorded in the spec's "Files" section too): `colours.lua.tmpl` becomes `desktop.lua.tmpl` (palette plus monitor, font, wallpaper); added `dot_config/nwg-bar/bar.json` and `style.css.tmpl`, `dot_config/xdg-desktop-portal/hyprland-portals.conf`, `dot_config/hypr/dot_luarc.json`, and `tests/` (chezmoi-ignored).
+- The spec's file table is amended by this plan (recorded in the spec's "Files" section too): `colors.lua.tmpl` becomes `desktop.lua.tmpl` (palette plus monitor, font, wallpaper); added `dot_config/nwg-bar/bar.json` and `style.css.tmpl`, `dot_config/xdg-desktop-portal/hyprland-portals.conf`, `dot_config/hypr/dot_luarc.json`, and `tests/` (chezmoi-ignored).
 
 ---
 
@@ -38,7 +38,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF
 | `tests/hl-mock.lua` | | Fake `hl` API so the config runs under LuaJIT |
 | `tests/check.sh` | | Renders templates and validates every config offline |
 | `dot_config/hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` | Entry point: `require`s modules in order |
-| `dot_config/hypr/desktop.lua.tmpl` | `hypr/desktop.lua` | Generated table `D` with `colours`, `rgba()`, `monitor`, `font`, `wallpaper` |
+| `dot_config/hypr/desktop.lua.tmpl` | `hypr/desktop.lua` | Generated table `D` with `colors`, `rgba()`, `monitor`, `font`, `wallpaper` |
 | `dot_config/hypr/apps.lua` | `hypr/apps.lua` | Every external command, one table |
 | `dot_config/hypr/look.lua` | `hypr/look.lua` | Monitor, general, decoration, animations, layer rules, input |
 | `dot_config/hypr/rules.lua` | `hypr/rules.lua` | Workspace names, window rules |
@@ -51,11 +51,11 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF
 | `dot_config/waybar/style.css.tmpl` | | Glass styling |
 | `dot_config/waybar/executable_keys.sh` | `waybar/keys.sh` (mode 755) | Key table in rofi |
 | `dot_config/rofi/config.rasi` | | modi, icons |
-| `dot_config/rofi/theme.rasi.tmpl` | | Centred glass panel |
+| `dot_config/rofi/theme.rasi.tmpl` | | Centered glass panel |
 | `dot_config/dunst/dunstrc.tmpl` | | Notifications |
-| `dot_config/kitty/kitty.conf.tmpl` | | Terminal font and colours |
+| `dot_config/kitty/kitty.conf.tmpl` | | Terminal font and colors |
 | `dot_config/nwg-bar/bar.json` | | Logout / reboot / shutdown buttons |
-| `dot_config/nwg-bar/style.css.tmpl` | | nwg-bar colours |
+| `dot_config/nwg-bar/style.css.tmpl` | | nwg-bar colors |
 | `README.md` | (source only) | "Hyprland desktop" section |
 
 ---
@@ -69,7 +69,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF
 - Create: `tests/check.sh`
 
 **Interfaces:**
-- Produces: template data `.desktop.colours.<name>` (strings with leading `#`), `.desktop.glass_alpha` (two hex digits), `.desktop.font`, `.desktop.font_size`, `.desktop.icon_font`, `.desktop.wallpaper`, `.desktop.monitor.{output,mode,position,scale}`.
+- Produces: template data `.desktop.colors.<name>` (strings with leading `#`), `.desktop.glass_alpha` (two hex digits), `.desktop.font`, `.desktop.font_size`, `.desktop.icon_font`, `.desktop.wallpaper`, `.desktop.monitor.{output,mode,position,scale}`.
 - Produces: `tests/check.sh` which every later task runs. It exits non-zero on any failure and prints one `ok <file>` line per validated file. Its Lua stage prints `bind <keys>`, `submap <name>`, `window_rule <name>`, `workspace_rule <workspace>`, `layer_rule <name>`, `exec <cmd>`, `env <NAME>` lines that later tasks grep.
 
 - [ ] **Step 1: Write the data file**
@@ -94,7 +94,7 @@ mode     = "2560x1440@60"
 position = "0x0"
 scale    = 1.25
 
-[desktop.colours]
+[desktop.colors]
 bg     = "#14191e"   # bar, rofi, dunst background
 bg_alt = "#0f1316"
 fg     = "#e6e6e8"
@@ -113,7 +113,7 @@ yellow = "#f4c744"   # launcher glyph
 
 Run:
 ```sh
-chezmoi execute-template '{{ .desktop.colours.bg }} {{ .desktop.glass_alpha }} {{ .desktop.monitor.scale }} {{ trimPrefix "#" .desktop.colours.teal }}'
+chezmoi execute-template '{{ .desktop.colors.bg }} {{ .desktop.glass_alpha }} {{ .desktop.monitor.scale }} {{ trimPrefix "#" .desktop.colors.teal }}'
 ```
 Expected output exactly: `#14191e cc 1.25 42aa9e`
 
@@ -391,7 +391,7 @@ cd ~/.local/share/chezmoi
 git add .chezmoidata/desktop.toml .chezmoiignore tests/hl-mock.lua tests/check.sh
 git commit -m "desktop: palette data file and offline config check harness
 
-.chezmoidata/desktop.toml is the single source for colours, fonts, monitor
+.chezmoidata/desktop.toml is the single source for colors, fonts, monitor
 and wallpaper; every Hyprland-session template reads it. tests/check.sh
 renders the templates and validates each config with its own tool, running
 the Lua under a mocked hl API with LuaJIT.
@@ -411,7 +411,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 - Create: `dot_config/hypr/dot_luarc.json`
 
 **Interfaces:**
-- Produces: `require("desktop")` returns `D` with `D.colours.<name>` (hex without `#`), `D.glass_alpha`, `D.rgba(name, alpha?)` → `"rgba(rrggbbaa)"`, `D.monitor = { output, mode, position, scale }`, `D.font`, `D.font_size`, `D.wallpaper`.
+- Produces: `require("desktop")` returns `D` with `D.colors.<name>` (hex without `#`), `D.glass_alpha`, `D.rgba(name, alpha?)` → `"rgba(rrggbbaa)"`, `D.monitor = { output, mode, position, scale }`, `D.font`, `D.font_size`, `D.wallpaper`.
 - Produces: `require("apps")` returns a table of command strings: `terminal, task_manager, launcher, window_switcher, browser, alt_browser, aux_browser, file_manager, editor, music, games, photos, images, alt_images, logout, keys_help, screenshot, wallpaper_apply, wallpaper_restart`.
 - Produces: `hyprland.lua` requires, in order: `desktop`, `apps`, `look`, `rules`, `binds`, `autostart`. Tasks 3 to 6 create the last four; until then `pcall(require, …)` keeps the harness green.
 
@@ -424,8 +424,8 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 -- Shared desktop data for the Hyprland config: palette, monitor, font.
 local D = {}
 
-D.colours = {
-{{- range $name, $hex := .desktop.colours }}
+D.colors = {
+{{- range $name, $hex := .desktop.colors }}
   {{ $name }} = "{{ trimPrefix "#" $hex }}",
 {{- end }}
 }
@@ -442,9 +442,9 @@ D.monitor = {
   scale    = {{ .desktop.monitor.scale }},
 }
 
--- Hyprland colour string for a palette entry, with optional hex alpha.
+-- Hyprland color string for a palette entry, with optional hex alpha.
 function D.rgba(name, alpha)
-  local hex = assert(D.colours[name], "unknown colour " .. tostring(name))
+  local hex = assert(D.colors[name], "unknown color " .. tostring(name))
   return "rgba(" .. hex .. (alpha or "ff") .. ")"
 end
 
@@ -453,7 +453,7 @@ return D
 
 - [ ] **Step 2: Check the render**
 
-Run: `chezmoi execute-template < ~/.local/share/chezmoi/dot_config/hypr/desktop.lua.tmpl | luajit -e 'local D = dofile("/dev/stdin"); print(D.rgba("teal", "ee"), D.monitor.scale, D.colours.bg)'`
+Run: `chezmoi execute-template < ~/.local/share/chezmoi/dot_config/hypr/desktop.lua.tmpl | luajit -e 'local D = dofile("/dev/stdin"); print(D.rgba("teal", "ee"), D.monitor.scale, D.colors.bg)'`
 Expected: `rgba(42aa9eee)	1.25	14191e`
 
 - [ ] **Step 3: Write apps.lua**
@@ -510,7 +510,7 @@ return A
 -- Order matters: desktop and apps are data, look sets the layout that
 -- binds and rules refer to, autostart comes last.
 --
--- Edit .chezmoidata/desktop.toml for colours, fonts, monitor, wallpaper.
+-- Edit .chezmoidata/desktop.toml for colors, fonts, monitor, wallpaper.
 -- Reload with super+shift+r or `hyprctl reload`.
 
 require("desktop")
@@ -571,7 +571,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 
 ```lua
 -- Monitor, tiling layout, decoration, animations, input and layer rules.
--- Colours come from desktop.lua (generated from .chezmoidata/desktop.toml).
+-- Colors come from desktop.lua (generated from .chezmoidata/desktop.toml).
 local D = require("desktop")
 
 local L = { border_size = 2 }
@@ -758,7 +758,7 @@ hl.window_rule({
   border_size = 0, rounding = 0,
 })
 
--- Float centres: programs whose every window except the main one floats.
+-- Float centers: programs whose every window except the main one floats.
 hl.window_rule({
   name  = "float-hydrus-dialogs",
   match = { class = "(?i)hydrus", title = "negative:^(main|hydrus client media viewer)" },
@@ -1025,7 +1025,7 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("wl-paste --watch cliphist store")
   hl.exec_cmd("emacs --daemon")
   hl.exec_cmd("/home/linuxbrew/.linuxbrew/bin/sunshine")
-  -- Not installed today; harmless if it stays that way.
+  -- Arrives with the next bazzy image; the guard keeps this harmless until then.
   hl.exec_cmd("command -v syncthing >/dev/null && syncthing --no-browser")
 end)
 ```
@@ -1225,7 +1225,7 @@ Note on the clock: Waybar formats with C++ chrono, which does not support glibc'
    transparent window, each module group a translucent rounded pill that
    Hyprland blurs (layer rule "glass-bar" in hypr/look.lua). */
 
-{{- $c := .desktop.colours }}
+{{- $c := .desktop.colors }}
 {{- $a := .desktop.glass_alpha }}
 
 * {
@@ -1301,7 +1301,7 @@ window#waybar.empty #custom-close,
 window#waybar.empty #custom-prev,
 window#waybar.empty #custom-next { padding: 0; opacity: 0; }
 
-/* Centre ------------------------------------------------------------------ */
+/* Center ------------------------------------------------------------------ */
 #clock { color: {{ $c.fg }}; padding: 0 14px; }
 
 /* Right ------------------------------------------------------------------- */
@@ -1356,7 +1356,7 @@ EOF
 Run: `~/.local/share/chezmoi/tests/check.sh | grep -E '^(ok|FAIL) .*(waybar|style|config.jsonc)'; echo "exit ${PIPESTATUS[0]}"`
 Expected: `ok waybar/config.jsonc`, `ok style.css (renders)`, `exit 0`.
 
-Render the CSS once and eyeball it for a leaked template or an empty colour:
+Render the CSS once and eyeball it for a leaked template or an empty color:
 ```sh
 chezmoi execute-template < ~/.local/share/chezmoi/dot_config/waybar/style.css.tmpl | grep -nE '\{\{|: ;|#cc;'
 ```
@@ -1394,7 +1394,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 - [ ] **Step 1: Write config.rasi**
 
 ```css
-/* rofi for the Hyprland session. Theme colours live in theme.rasi
+/* rofi for the Hyprland session. Theme colors live in theme.rasi
    (generated from .chezmoidata/desktop.toml). */
 configuration {
     modi: "drun,window";
@@ -1415,8 +1415,8 @@ configuration {
 
 ```css
 /* GENERATED by chezmoi from .chezmoidata/desktop.toml.
-   Centred glass panel; Hyprland blurs behind it (layer rule glass-launcher). */
-{{- $c := .desktop.colours }}
+   Centered glass panel; Hyprland blurs behind it (layer rule glass-launcher). */
+{{- $c := .desktop.colors }}
 {{- $a := .desktop.glass_alpha }}
 
 * {
@@ -1517,14 +1517,14 @@ Since this KDE session is Wayland, rofi can be launched for a visual check right
 tmp=$(mktemp -d); chezmoi execute-template < ~/.local/share/chezmoi/dot_config/rofi/theme.rasi.tmpl > $tmp/theme.rasi
 printf 'one\ntwo\nthree\n' | rofi -dmenu -theme $tmp/theme.rasi -p test; rm -rf $tmp
 ```
-Expected: a centred dark translucent panel with a yellow prompt and teal selection. Press Escape. (No blur here; KWin does not apply Hyprland's layer rule.)
+Expected: a centered dark translucent panel with a yellow prompt and teal selection. Press Escape. (No blur here; KWin does not apply Hyprland's layer rule.)
 
 - [ ] **Step 4: Commit**
 
 ```sh
 cd ~/.local/share/chezmoi
 git add dot_config/rofi/config.rasi dot_config/rofi/theme.rasi.tmpl
-git commit -m "rofi: centred glass theme on the shared palette
+git commit -m "rofi: centered glass theme on the shared palette
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
@@ -1549,7 +1549,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 ```ini
 # GENERATED by chezmoi from .chezmoidata/desktop.toml.
 # Ported from the old dunstrc; sits under the floating Waybar top right.
-{{- $c := .desktop.colours }}
+{{- $c := .desktop.colors }}
 {{- $a := .desktop.glass_alpha }}
 
 [global]
@@ -1605,7 +1605,7 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 
 ```conf
 # GENERATED by chezmoi from .chezmoidata/desktop.toml.
-{{- $c := .desktop.colours }}
+{{- $c := .desktop.colors }}
 
 font_family      {{ .desktop.font }}
 font_size        {{ .desktop.font_size }}.0
@@ -1675,7 +1675,7 @@ color15 {{ $c.fg }}
 
 ```css
 /* GENERATED by chezmoi from .chezmoidata/desktop.toml. */
-{{- $c := .desktop.colours }}
+{{- $c := .desktop.colors }}
 {{- $a := .desktop.glass_alpha }}
 window { background-color: {{ $c.bg_alt }}{{ $a }}; }
 #outer-box { margin: 0; }
@@ -1704,9 +1704,9 @@ Expected: every `ok` line from earlier tasks plus `ok dunst/dunstrc`, `ok kitty.
 Kitty can be launched now for a visual check of the rendered config:
 ```sh
 tmp=$(mktemp -d); chezmoi execute-template < ~/.local/share/chezmoi/dot_config/kitty/kitty.conf.tmpl > $tmp/kitty.conf
-kitty --config $tmp/kitty.conf -e bash -c 'for i in 1 2 3 4 5 6; do tput setaf $i; echo colour $i; done; read -p "press enter"'; rm -rf $tmp
+kitty --config $tmp/kitty.conf -e bash -c 'for i in 1 2 3 4 5 6; do tput setaf $i; echo color $i; done; read -p "press enter"'; rm -rf $tmp
 ```
-Expected: a translucent dark window, Fira Code, and six coloured lines: rose, green, yellow, teal, violet, cyan. No "unknown option" line at the top.
+Expected: a translucent dark window, Fira Code, and six colored lines: rose, green, yellow, teal, violet, cyan. No "unknown option" line at the top.
 
 - [ ] **Step 5: Commit**
 
@@ -1814,9 +1814,9 @@ Claude-Session: https://claude.ai/code/session_013YJzzxRLr6TNFaFEHbomJF"
 - [ ] **Step 1: Update the table rows**
 
 In the spec's Files table:
-- Replace the `dot_config/hypr/colours.lua.tmpl` row with `| dot_config/hypr/desktop.lua.tmpl | hypr/desktop.lua | Palette, monitor, font and wallpaper as a Lua table, generated from the data file |`
+- Replace the `dot_config/hypr/colors.lua.tmpl` row with `| dot_config/hypr/desktop.lua.tmpl | hypr/desktop.lua | Palette, monitor, font and wallpaper as a Lua table, generated from the data file |`
 - Add rows: `| dot_config/hypr/dot_luarc.json | hypr/.luarc.json | LSP stub path for editing |`, `| dot_config/xdg-desktop-portal/hyprland-portals.conf | xdg-desktop-portal/hyprland-portals.conf | KDE file chooser, Hyprland screenshots |`, `| dot_config/nwg-bar/bar.json, style.css.tmpl | nwg-bar/ | Logout menu (stock file calls sway) |`, `| tests/hl-mock.lua, tests/check.sh | (ignored) | Offline validation |`.
-- In the Autostart section, change `syncthing --no-browser` to `syncthing --no-browser (guarded; not installed today)`.
+- In the Autostart section, change `syncthing --no-browser` to `syncthing --no-browser (guarded; arrives with the next bazzy image)`.
 
 - [ ] **Step 2: Commit**
 
@@ -1961,5 +1961,5 @@ Tell the user the config is applied and the checklist is at that path. Then wait
 ## Self-review notes
 
 - **Spec coverage.** Palette and seam: Task 1, 2. Layout and look: Task 3. Workspaces and rules: Task 4. Every key in the spec table: Task 5 (the count check reconciles against the table). Autostart and env: Task 6. Waybar with all listed modules and mouse actions: Task 7. rofi, dunst, kitty: Tasks 8, 9. README: Task 10. Verification: Tasks 12, 13. Out-of-scope items are not touched. Deviations from the spec are listed under Global Constraints and written back in Task 11.
-- **Type consistency.** `desktop.lua` exports `D.colours`, `D.rgba`, `D.monitor`, `D.font`, `D.font_size`, `D.glass_alpha`, `D.wallpaper`; used by `apps.lua` (`D.wallpaper`), `look.lua` (`D.monitor`, `D.rgba`, `D.font`, `D.font_size`, `D.glass_alpha`). `look.lua` exports `border_size`; `rules.lua` exports `names`; both consumed by `binds.lua` under those names. Submap names `apps` and `layout` match between binds.lua and the Waybar submap module. `apps.keys_help` targets `~/.config/waybar/keys.sh`, produced by Task 7's `executable_keys.sh`.
+- **Type consistency.** `desktop.lua` exports `D.colors`, `D.rgba`, `D.monitor`, `D.font`, `D.font_size`, `D.glass_alpha`, `D.wallpaper`; used by `apps.lua` (`D.wallpaper`), `look.lua` (`D.monitor`, `D.rgba`, `D.font`, `D.font_size`, `D.glass_alpha`). `look.lua` exports `border_size`; `rules.lua` exports `names`; both consumed by `binds.lua` under those names. Submap names `apps` and `layout` match between binds.lua and the Waybar submap module. `apps.keys_help` targets `~/.config/waybar/keys.sh`, produced by Task 7's `executable_keys.sh`.
 - **Placeholders.** None: every file is given in full. The one deliberately unverifiable set of values (flatpak window classes) is called out in Task 4 and closed by Task 13.

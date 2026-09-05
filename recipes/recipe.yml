@@ -46,7 +46,6 @@ modules:
         - emacs
         - java-25-openjdk-devel
         - mpv
-
   # Bakes cosign.pub and a container policy into the image so
   # rpm-ostree verifies every future update against this repo's key.
   - type: signing
