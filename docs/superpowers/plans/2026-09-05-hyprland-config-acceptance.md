@@ -7,10 +7,13 @@ Log out of Plasma, pick **Hyprland** in SDDM, log in. Then in order:
 - [ ] `super+Return` opens kitty. In it: `hyprctl configerrors` prints nothing.
 - [ ] `hyprctl binds -j | jq length` is at least 80.
 - [ ] `super+shift+r` reloads without a red error notification.
+- [ ] `hyprctl workspacerules | grep -c persistent` prints 9, not 18 (a higher number means Hyprland re-ran `rules.lua` on a repeated `require`; report it).
+- [ ] Waybar's log has no CSS errors: `pkill -x waybar; waybar 2>&1 | grep -i css` for a few seconds, then Ctrl+C and relaunch with `waybar &`. Expect no output.
 
 ## 2. Keys (walk the table: super+shift+/ shows it)
 - [ ] super+r rofi drun; super+w rofi window; Escape closes both.
 - [ ] super+s then b: LibreWolf. super+s then d: Dolphin. super+s then e: Emacs frame.
+- [ ] Chords with a modifier on the second key: super+s then shift+b opens Brave; super+s then ctrl+b opens FreeTube. Watch the yellow "apps" pill in the bar: it must stay until the second key. super+s then Escape cancels the chord.
 - [ ] Open three kitty windows: super+n / super+e move focus; super+shift+n swaps; super+m focuses master; super+shift+m swaps to master; super+h / super+l resize.
 - [ ] super+shift+Tab rolls the stack.
 - [ ] super+ctrl+m groups two windows into tabs; super+ctrl+. switches; super+ctrl+u leaves the group.
@@ -48,6 +51,7 @@ rules.lua gets the real value.
 - [ ] Focused window has the teal→violet gradient border; unfocused are dim.
 - [ ] Workspace switch slides.
 - [ ] Wallpaper shows (stock Hyprland image until one is chosen).
+- [ ] super+v re-applies it without a hyprpaper error notification; super+shift+v restarts hyprpaper and the wallpaper comes back.
 
 ## 6. Back to Plasma
 - [ ] Log out (nwg-bar → Logout), log into Plasma. Konsole, Dolphin, notifications behave as before.
