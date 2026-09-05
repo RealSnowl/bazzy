@@ -140,7 +140,7 @@ assert dnf["repos"]["cleanup"] is True
 assert dnf["repos"]["copr"] == ["lionheartp/Hyprland"]
 assert "remove" not in dnf, "no remove block allowed"
 pkgs = dnf["install"]["packages"]
-assert len(pkgs) == 25, len(pkgs)
+assert len(pkgs) == 24, len(pkgs)
 assert "hyprland-git" not in pkgs
 for p in ["hyprland","xdg-desktop-portal-hyprland","hyprpolkitagent","hyprlock","hypridle","hyprpaper",
           "waybar","rofi","dunst","grim","slurp","cliphist","wev","pavucontrol","network-manager-applet","blueman","nwg-bar",
@@ -550,7 +550,7 @@ Run:
 ```sh
 rpm -q hyprland xdg-desktop-portal-hyprland hyprlock hypridle hyprpaper hyprpolkitagent waybar rofi dunst grim slurp cliphist wev pavucontrol network-manager-applet blueman nwg-bar aspell aspell-en cmake direnv emacs java-25-openjdk-devel mpv | grep -c -v 'not installed'
 ```
-Expected: `25`.
+Expected: `24`.
 
 - [ ] **Step 3: No Hyprland COPR on the live system**
 
