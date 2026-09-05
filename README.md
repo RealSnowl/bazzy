@@ -1,43 +1,55 @@
-# BlueBuild Template &nbsp; [![bluebuild build badge](https://github.com/blue-build/template/actions/workflows/build.yml/badge.svg)](https://github.com/blue-build/template/actions/workflows/build.yml)
+# bazzy &nbsp; [![bluebuild build badge](https://github.com/RealSnowl/bazzy/actions/workflows/build.yml/badge.svg)](https://github.com/RealSnowl/bazzy/actions/workflows/build.yml)
 
-See the [BlueBuild docs](https://blue-build.org/how-to/setup/) for quick setup instructions for setting up your own repository based on this template.
+Bazzite `stable` with a Hyprland session alongside KDE Plasma. Nothing is
+removed from Bazzite; Hyprland shows up as a second entry in the SDDM
+session picker.
 
-After setup, it is recommended you update this README to describe your custom image.
+The recipe is `recipes/recipe.yml`. It enables the
+[lionheartp/Hyprland](https://copr.fedorainfracloud.org/coprs/lionheartp/Hyprland/)
+COPR at build time only, installs Hyprland and a small set of Wayland
+helpers, and folds in the packages that used to be layered on the host with
+rpm-ostree. The image is rebuilt every night on top of upstream Bazzite and
+published to `ghcr.io/realsnowl/bazzy:latest`.
+
+Design notes: `docs/superpowers/specs/2026-09-05-hyprland-image-design.md`.
 
 ## Installation
 
-> [!WARNING]  
-> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
+Rebase an existing Bazzite install. `rpm-ostree reset` comes first because
+rpm-ostree refuses to rebase while a layered package is already in the new
+base, and every previously layered package is now inside the image.
 
-To rebase an existing atomic Fedora installation to the latest build:
+```sh
+rpm-ostree reset
+rpm-ostree rebase ostree-unverified-registry:ghcr.io/realsnowl/bazzy:latest
+systemctl reboot
+```
 
-- First rebase to the unsigned image, to get the proper signing keys and policies installed:
-  ```
-  rpm-ostree rebase ostree-unverified-registry:ghcr.io/blue-build/template:latest
-  ```
-- Reboot to complete the rebase:
-  ```
-  systemctl reboot
-  ```
-- Then rebase to the signed image, like so:
-  ```
-  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/blue-build/template:latest
-  ```
-- Reboot again to complete the installation
-  ```
-  systemctl reboot
-  ```
+The unsigned step installs this repo's public key and container policy.
+Then switch to the signed image:
 
-The `latest` tag will automatically point to the latest build. That build will still always use the Fedora version specified in `recipe.yml`, so you won't get accidentally updated to the next major version.
+```sh
+rpm-ostree rebase ostree-image-signed:docker://ghcr.io/realsnowl/bazzy:latest
+systemctl reboot
+```
 
-## ISO
-
-If build on Fedora Atomic, you can generate an offline ISO with the instructions available [here](https://blue-build.org/how-to/generate-iso/#_top). These ISOs cannot unfortunately be distributed on GitHub for free due to large sizes, so for public projects something else has to be used for hosting.
+Bazzite's updater follows `latest` from then on. `rpm-ostree rollback`
+returns to the previous deployment. A full return to stock is a rebase to
+`ostree-image-signed:docker://ghcr.io/ublue-os/bazzite:stable`.
 
 ## Verification
 
-These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
+Images are signed with [cosign](https://github.com/sigstore/cosign). With
+`cosign.pub` from this repo:
 
-```bash
-cosign verify --key cosign.pub ghcr.io/blue-build/template
+```sh
+cosign verify --key cosign.pub ghcr.io/realsnowl/bazzy:latest
 ```
+
+## Maintenance
+
+- A failed nightly build sends an email from GitHub. The host keeps the last
+  good image. If the COPR is lagging a Fedora release, pin `image-version`
+  to the previous Fedora number until it catches up.
+- Dependabot opens PRs for the BlueBuild action. Merge when green.
+- Adding a package is one line in the recipe.
