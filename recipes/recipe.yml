@@ -47,6 +47,8 @@ modules:
         - java-25-openjdk-devel
         - mpv
         - syncthing
+        - fastfetch
+        - onefetch
   # Bakes cosign.pub and a container policy into the image so
   # rpm-ostree verifies every future update against this repo's key.
   - type: signing
