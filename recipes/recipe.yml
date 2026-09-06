@@ -28,7 +28,9 @@ modules:
         - hypridle
         - hyprpaper
         # desktop plumbing, from Fedora
-        - waybar
+        # waybar-git: 0.15.0 clicks workspaces with the pre-0.55 dispatch
+        # syntax that Hyprland 0.56 rejects; master fixed that in July 2026.
+        - waybar-git
         - rofi
         - dunst
         - grim
