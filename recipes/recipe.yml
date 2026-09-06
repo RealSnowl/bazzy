@@ -23,6 +23,7 @@ modules:
         - hyprland
         - xdg-desktop-portal-hyprland
         - hyprpolkitagent
+        - hyprland-guiutils
         - hyprlock
         - hypridle
         - hyprpaper
