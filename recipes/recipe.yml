@@ -55,6 +55,13 @@ modules:
         - gimp
         - blender
 
+  # Upstream Bazzite's per-user setup script fails to parse on every login
+  # (empty if/else bodies). Patch it at build time; the script is a no-op
+  # once upstream fixes it.
+  - type: script
+    scripts:
+      - fix-bazzite-user-setup.sh
+
   # Bakes cosign.pub and a container policy into the image so
   # rpm-ostree verifies every future update against this repo's key.
   - type: signing
