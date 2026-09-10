@@ -57,6 +57,7 @@ modules:
         - imv
         - mpd
         - mpc
+        - tellico
 
   # Upstream Bazzite's per-user setup script fails to parse on every login
   # (empty if/else bodies). Patch it at build time; the script is a no-op
